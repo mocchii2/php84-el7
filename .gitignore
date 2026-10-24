@@ -1,0 +1,10 @@
+*.rpm
+*.tar.gz
+*.tar.xz
+*.tgz
+*.log
+RPMS/
+SRPMS/
+BUILD/
+BUILDROOT/
+verify-keyring/

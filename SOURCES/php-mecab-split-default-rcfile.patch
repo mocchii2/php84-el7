@@ -1,0 +1,42 @@
+--- php-mecab-89921c991b0012f0e91c5ee8dd532f285cd172a4/mecab/mecab7.c.orig	2022-02-01 00:00:00.000000000 +0000
++++ php-mecab-89921c991b0012f0e91c5ee8dd532f285cd172a4/mecab/mecab7.c	2026-10-24 00:00:00.000000000 +0000
+@@ -1321,2 +1321,4 @@
+ 	zend_string *str = NULL;
++	const char *rcfile = NULL;
++	int rcfile_len = 0;
+ 	zend_string *zdicdir = NULL;
+@@ -1333,4 +1335,5 @@
+-	char *argv[5] = { "mecab", "-Owakati", NULL, NULL, NULL };
+-	char pathbuf[2][PATHBUFSIZE] = {{'\0'}};
+-	char *dicdir_buf = &(pathbuf[0][0]);
+-	char *userdic_buf = &(pathbuf[1][0]);
++	char *argv[6] = { "mecab", "-Owakati", NULL, NULL, NULL, NULL };
++	char pathbuf[3][PATHBUFSIZE] = {{'\0'}};
++	char *rcfile_buf = &(pathbuf[0][0]);
++	char *dicdir_buf = &(pathbuf[1][0]);
++	char *userdic_buf = &(pathbuf[2][0]);
+@@ -1343,4 +1346,8 @@
+ 	/* apply default options */
++	if (PHP_MECAB_CHECK_DEFAULT(rcfile)) {
++		rcfile = MECAB_G(default_rcfile);
++		rcfile_len = (int)strlen(MECAB_G(default_rcfile));
++	}
+ 	if (zdicdir != NULL && ZSTR_LEN(zdicdir) > 0) {
+ 		dicdir = ZSTR_VAL(zdicdir);
+ 		dicdir_len = ZSTR_LEN(zdicdir);
+@@ -1359,4 +1366,15 @@
+ 	/* check for dictionary */
++	if (rcfile != NULL && rcfile_len > 0) {
++		char *rcfile_ptr = rcfile_buf;
++		*rcfile_ptr++ = '-';
++		*rcfile_ptr++ = 'r';
++		if (!php_mecab_check_path(rcfile, rcfile_len, rcfile_ptr)) {
++			php_error_docref(NULL, E_WARNING,
++					"'%s' does not exist or is not readable", rcfile);
++			RETURN_FALSE;
++		}
++		argv[argc++] = rcfile_buf;
++	}
+ 	if (dicdir != NULL && dicdir_len > 0) {
+ 		char *dicdir_ptr = dicdir_buf;
+ 		*dicdir_ptr++ = '-';

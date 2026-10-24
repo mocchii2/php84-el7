@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.gpg binary
+*.rpm binary
+SPECS/** -text
+SOURCES/** -text

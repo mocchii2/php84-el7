@@ -1,0 +1,14 @@
+--- a/tests/bug45556.phpt
++++ b/tests/bug45556.phpt
+@@ -32,3 +32,3 @@
+-Warning: xmlrpc_server_call_method(): XML parse error: [line 1, column 1, message: Invalid document end] Unable to add introspection data returned from bar::test() in %s on line %d
++Warning: xmlrpc_server_call_method(): XML parse error: [line 1, column 1, message: Not well-formed (invalid token)] Unable to add introspection data returned from bar::test() in %s on line %d
+ 
+ Warning: xmlrpc_server_call_method(): Invalid callback 'foo::bar' passed in %s on line %d
+--- a/tests/bug74975.phpt
++++ b/tests/bug74975.phpt
+@@ -9,3 +9,4 @@
++#[AllowDynamicProperties]
+ class Foo {
+ 
+ }

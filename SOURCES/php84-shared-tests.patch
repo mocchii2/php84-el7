@@ -1,0 +1,32 @@
+--- a/tests/basic/oom_rfc1867.inc
++++ b/tests/basic/oom_rfc1867.inc
+@@ -52,6 +52,14 @@
+     ];
+ 
++    // The child uses -n, so shared mbstring must be loaded explicitly.
++    $mbstringModule = ini_get('extension_dir') . DIRECTORY_SEPARATOR . 'mbstring.' . PHP_SHLIB_SUFFIX;
++    if (in_array('mbstring.encoding_translation=1', $extraIni, true) &&
++        is_file($mbstringModule)) {
++        $cmd[] = '-d';
++        $cmd[] = 'extension=' . $mbstringModule;
++    }
++
+     foreach ($extraIni as $ini) {
+         $cmd[] = '-d';
+         $cmd[] = $ini;
+     }
+--- a/ext/tidy/tests/gh20374.phpt
++++ b/ext/tidy/tests/gh20374.phpt
+@@ -2,6 +2,12 @@
+ GH-20374 (PHP with tidy and custom-tags)
+ --EXTENSIONS--
+ tidy
++--SKIPIF--
++<?php
++if (!array_key_exists('custom-tags', (new tidy)->getConfig())) {
++    die('skip linked libtidy does not support custom-tags');
++}
++?>
+ --CREDITS--
+ franck-paul
+ --FILE--
