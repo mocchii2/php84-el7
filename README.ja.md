@@ -1,12 +1,12 @@
 # PHP 8.4.27 RPMs for EL7 (x86_64)
 
+> **緊急対応向け:** サポート対象OSへの移行まで、PHP 8.4の検証・導入を支援します。<br>
+> **対象環境:** EL7 x86_64、nginx/PHP-FPM（NTS）。ビルド・検証環境はOracle Linux 7.9です。<br>
+> **非保証:** EL7はEOLです。安全性・互換性は保証しません。事前検証と復旧手段を確保してください。
+
+[導入・移行手順（英語）](INSTALL.md) | **[ロールバック・復旧計画（英語）](INSTALL.md#rollback)**
+
 [English](README.md) | [日本語 / Japanese](README.ja.md)
-
-> **緊急対応向け:** EL7環境でPHP 8.4系を迅速に検証・導入するための手順・ビルド設定集です。
-> サポート対象OSへの移行までの暫定対応を想定しています。本番適用前に検証と復旧手段を確保してください。
-
-> **For emergency use:** Procedures and build configurations for quickly testing and deploying PHP 8.4 on EL7.
-> Intended as a temporary bridge to a supported OS. Validate your applications and establish a recovery plan before production use.
 
 ## このリポジトリでできること（3行） / What this repository does
 

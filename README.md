@@ -1,9 +1,12 @@
 # PHP 8.4.27 RPMs for EL7 (x86_64)
 
-[English](README.md) | [日本語 / Japanese](README.ja.md)
+> **Emergency use:** Test/deploy PHP 8.4 as a temporary bridge to a supported OS.<br>
+> **Target:** EL7 x86_64, nginx/PHP-FPM (NTS); build/test environment: Oracle Linux 7.9.<br>
+> **No warranty:** EL7 is EOL; no security or compatibility guarantee. Test first and prepare recovery.
 
-> **For emergency use:** Procedures and build configurations for quickly testing and deploying PHP 8.4 on EL7.
-> Intended as a temporary bridge to a supported OS. Validate your applications and establish a recovery plan before production use.
+[Installation / migration](INSTALL.md) | **[Rollback / recovery plan](INSTALL.md#rollback)**
+
+[English](README.md) | [日本語 / Japanese](README.ja.md)
 
 ## What this repository does
 
