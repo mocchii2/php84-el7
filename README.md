@@ -1,38 +1,42 @@
 # PHP 8.4.27 RPMs for EL7 (x86_64)
 
-> **緊急対応向け:** EL7環境でPHP 8.4系を迅速に検証・導入するための手順・ビルド設定集です。
-> サポート対象OSへの移行までの暫定対応を想定しています。本番適用前に検証と復旧手段を確保してください。
+[English](README.md) | [日本語 / Japanese](README.ja.md)
 
-## このリポジトリでできること（3行）
+> **For emergency use:** Procedures and build configurations for quickly testing and deploying PHP 8.4 on EL7.
+> Intended as a temporary bridge to a supported OS. Validate your applications and establish a recovery plan before production use.
 
-EL7向けのPHP 8.4.27 / FPMと拡張を、署名付きRPMで導入できます。<br>
-専用の依存ライブラリを使用し、OSのOpenSSLやnginxは置き換えません。<br>
-完全な対応ソースRPM・SPEC・パッチから、自分でビルドできます。
+## What this repository does
 
-## 対応環境
+Install PHP 8.4.27 / FPM and extensions on EL7 using signed RPMs.<br>
+Use private dependency libraries without replacing system OpenSSL or nginx.<br>
+Rebuild from complete corresponding source RPMs, SPECs and patches.
 
-- OS: EL7系 Linux（CentOS 7 / RHEL 7 / Oracle Linux 7）。
-- アーキテクチャ: **x86_64のみ**。検証用ビルド環境はOracle Linux 7.9。
-- nginx / PHP-FPM向け、NTSビルド。Apache mod_phpは提供しません。
-- 全派生OSでの動作保証はありません。EL8/9、aarch64用ではありません。
+## Target environment
 
-## 最短手順（署名確認からインストールまで）
+- OS: EL7-family Linux (CentOS 7 / RHEL 7 / Oracle Linux 7).
+- Architecture: **x86_64 only**. Build/test environment: Oracle Linux 7.9.
+- NTS build for nginx / PHP-FPM; Apache mod_php is not provided.
+- Not certified on every derivative/configuration. Not for EL8/9 or aarch64.
 
-**以下はPHP未導入の新規・使い捨て検証ホスト向けです。**
-既存PHPの移行は [INSTALL.md](INSTALL.md) に従い、クローンでリハーサルしてください。
-本パッケージはシステムPHPを置き換えます。一発での本番更新には使わないでください。
-スナップショットと復旧手順を確保し、信頼できるOSリポジトリから
-`curl`、`gnupg2`、`tar`、`yum`、`sudo` を用意します。
+## Quickstart: signature verification through installation
 
-必要なOS/EPEL依存（`capstone`、`nginx-filesystem`、`libmcrypt`など）は、
-**署名検証が有効な信頼できるリポジトリから取得可能にするか、先に導入してください。**
-EL7のアーカイブ設定は環境依存です。依存エラーを `--nodeps` や `--nogpgcheck` で
-回避しないでください。nginx.org版を使っている場合も、依存を満たすためだけに
-nginx本体を置き換えないでください。下記は開発用を含むRPM一式を選択しますが、
-**任意のCAポリシーRPMは除外**します。
+**The commands below are for a fresh, disposable test host without PHP.**
+For an existing installation, follow [INSTALL.md](INSTALL.md) and rehearse on a
+clone. These packages replace system PHP: this is not a one-shot production
+upgrade. Have a recovery snapshot and restore procedure ready. Install `curl`,
+`gnupg2`, `tar`, `yum` and `sudo` from trusted OS repositories first.
 
-公開鍵の指紋は別の信頼できる経路でも確認してください。同じ配布元から取得した
-鍵とファイルだけでは、配布元の身元を独立に確認したことにはなりません。
+Required OS/EPEL dependencies (including `capstone`, `nginx-filesystem` and
+`libmcrypt`) must be available from **trusted repositories with signature
+verification enabled**, or installed beforehand. EL7 archive configuration
+depends on your environment. Never bypass errors with `--nodeps` or
+`--nogpgcheck`. Do not replace nginx.org's nginx just to satisfy a dependency.
+This example selects the full package set, including development RPMs, but
+**excludes the optional CA-policy RPM**.
+
+Confirm the public-key fingerprint through an independent trusted channel.
+Downloading a key and software from the same site is not independent identity
+verification.
 
 ```sh
 bash <<'BASH'
@@ -91,24 +95,28 @@ printf 'Downloaded files retained in: %s\n' "$work"
 BASH
 ```
 
-FPM起動だけではWeb公開されません。nginx本体の導入・サイト設定・ソケット権限は
-別途必要です。標準ソケットは `/var/run/php-fpm/php-fpm.sock` です。
-失敗した場合はそこで止め、表示されたエラーを解決してから進めてください。
-既存環境の設定や依存関係によって、上記以外の作業が必要です。
+Starting FPM does not publish a website. Install/configure nginx, site routing
+and socket permissions separately. The default socket is
+`/var/run/php-fpm/php-fpm.sock`. Stop on errors and resolve them before
+continuing; your existing configuration/dependencies may require extra work.
+Run from an interactive terminal: yum reads its confirmation from `/dev/tty`.
 
-## 注意点（既知の制約）
+## Known limitations
 
-- **EL7はEOLです。** OS全体の安全性や、すべての脆弱性への対応を保証しません。
-- 既存INIsの二重ロード、組み込み `sockets` の古いロード指定を確認してください。
-- 既存FPMプール・セッション権限・アプリケーションの互換性は個別確認が必要です。
-- MeCabは既存の `/etc/mecabrc` を使用します。配布辞書は上流IPADICだけです。
-- CAポリシーは任意導入です。OS標準OpenSSLには既知の拒否制約があります。
-- nginxのTLSは更新しません。詳細は [INSTALL.md](INSTALL.md)、
-  [VALIDATION.md](VALIDATION.md)、[CA-POLICY.md](CA-POLICY.md) を参照してください。
+- **EL7 is end-of-life.** This does not secure the entire OS or guarantee that
+  every vulnerability is fixed.
+- Check duplicate extension INIs and obsolete shared-load directives for the
+  built-in `sockets` extension.
+- Review existing FPM pools, session permissions and application compatibility.
+- MeCab uses existing `/etc/mecabrc`; only upstream IPADIC is distributed.
+- CA policy is opt-in; legacy system OpenSSL has documented distrust limitations.
+- nginx TLS is not upgraded. See [INSTALL.md](INSTALL.md),
+  [VALIDATION.md](VALIDATION.md) and [CA-POLICY.md](CA-POLICY.md).
 
-## 動作確認ログ（実測、2026-10-24）
+## Observed version output (2026-10-24)
 
-EL7 x86_64の検証VMで取得した出力です。ビルド日時は配布済みバイナリのものです。
+Captured on the EL7 x86_64 test VM. The build timestamp belongs to the
+distributed binary, not the time these commands were run.
 
 ```console
 $ php -v
